@@ -30,15 +30,7 @@ def clear_headings(content):
     soup = BeautifulSoup(content, 'html.parser')
     for tag_h in tags_for_clear:
         for head1 in soup.findAll(tag_h):
-            tag_style = ''
-            for child in head1.children:
-                if child.name:
-                    if 'style' in child.attrs:
-                        tag_style += child['style']
-                        print(tag_style)
-                    head1.find(child.name).replace_with(child.text)
-            if tag_style:
-                head1['style'] = tag_style
+            head1.string = head1.text
     return soup
 """
 index_content = 3 #14 - site_content, 3  - tv content
