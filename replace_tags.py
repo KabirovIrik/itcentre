@@ -14,7 +14,13 @@ while True:
         maxInt = int(maxInt/10)
 
 def get_text(node):
-    pass
+    styles = ''
+    text_content = ''
+    for child in node.children:
+        if child.name:
+            if 'style' in child.attrs:
+                styles += child['style']
+            text_content += child.text
 
 def clear_headings(content):
     """
