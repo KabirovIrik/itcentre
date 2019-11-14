@@ -13,14 +13,12 @@ while True:
     except OverflowError:
         maxInt = int(maxInt/10)
 
-def get_text(node):
+def get_styles(node):
     styles = ''
-    text_content = ''
-    for child in node.children:
-        if child.name:
-            if 'style' in child.attrs:
-                styles += child['style']
-            text_content += child.text
+    for child in node.find_all('a'):
+        print(child)
+    #print(styles)
+    return styles
 
 def clear_headings(content):
     """
@@ -31,6 +29,8 @@ def clear_headings(content):
     for tag_h in tags_for_clear:
         for head1 in soup.findAll(tag_h):
             head1.string = head1.text
+            print(type(head1))
+            head1['style'] = get_styles(head1)
     return soup
 """
 index_content = 3 #14 - site_content, 3  - tv content
