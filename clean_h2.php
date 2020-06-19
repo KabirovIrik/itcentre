@@ -27,9 +27,9 @@ function clear_h2($content) {
 }
 
 $servername = 'localhost';
-$username = 'itcentif_adp_ele';
-$password = 'd7V%ivYf';
-$dbname = 'itcentif_adp_ele';
+$username = '';
+$password = '';
+$dbname = '';
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 
