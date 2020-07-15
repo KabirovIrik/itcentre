@@ -2,7 +2,7 @@
 // В файле section_horizontal.php перед вызовом компонента catlog.section
 global $arSectName;
 
-// в компоненте catlog.section в $arSectName записыфваем название раздела
+// в компоненте catlog.section в $arSectName записыфваем название раздела в component_epilog
 $arSectName = $arResult['NAME'];
 
 //после вызова catalog.section: 
