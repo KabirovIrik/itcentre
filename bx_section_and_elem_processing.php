@@ -6,34 +6,28 @@ $APPLICATION->SetTitle("Manager");
 <?
 
 function get_template_from_file($path) {
-    $csvFile = new CCSVData();  //создаем объект для вывода данных из csv-файла
-    $file = $csvFile->LoadFile($path);    //загружаем искомый файл
-    $fields_type = 'R'; //дописываем строки в файл
-    $delimiter = ";";   //разделитель для csv-файла
-    $csvFile->SetFieldsType($fields_type);
-    $csvFile->SetDelimiter($delimiter);
-    $string = '';
-    $variables = array();
-    $cnt = 0;
-    while($arToImport = $csvFile->Fetch()){
-    	if($arToImport[2] != '') {
-			$string .= '<p>'.$arToImport[2].'</p>';
-		}
-    	if($arToImport[0] != '') {
-    		$last_var = strtolower($arToImport[0]); 
-    		$variables[$last_var] = array();
-    		$variables[$last_var][] = $arToImport[1];
-    	}
-    	else {
-    		$variables[$last_var][] = $arToImport[1];
-    	}
-    	$cnt++;
-    }
-
+	if (($handle = fopen($path, "r")) !== FALSE) {
+	    $string = '';
+	    $variables = array();
+	    while (($arToImport = fgetcsv($handle, 1000, ";")) !== FALSE) {
+	    	if($arToImport[2] != '') {
+				$string .= '<p>'.$arToImport[2].'</p>';
+			}
+	    	if($arToImport[0] != '') {
+	    		$last_var = mb_strtolower($arToImport[0]); 
+	    		$variables[$last_var] = array();
+	    		$variables[$last_var][] = $arToImport[1];
+	    	}
+	    	else {
+	    		$variables[$last_var][] = $arToImport[1];
+	    	}
+	    }
+	    fclose($handle);
+	}
     return array('vars' => $variables, 'template' => $string);
 }
 
-function get_template($name, $path) {
+function get_template_ik($name, $path) {
 	$templ = get_template_from_file($path);
 	$res_str = $templ['template'];
 	foreach ($templ['vars']  as $var => $values) {
@@ -60,7 +54,7 @@ if($_POST['ajax']) {
 				$templ = get_template_from_file($path);
 				$test_string = array();
 				for ($i=0; $i < 10; $i++) { 
-					echo(get_template('Название элемента №'.$i, $path).'<hr>');
+					echo(get_template_ik('Название элемента №'.$i, $path).'<hr>');
 				}
 	        }
 	        else {
@@ -87,7 +81,7 @@ if($_POST['ajax']) {
 				$section = array();
 				$section['ID'] = $ar_result['ID'];
 				$section['NAME'] = $IPROPERTY['SECTION_PAGE_TITLE']['ENTITY_ID'] == $ar_result['ID'] ? $IPROPERTY['SECTION_PAGE_TITLE']['VALUE'] : $ar_result['NAME'];
-				$temaple = get_template($section['NAME'], $getfile);
+				$temaple = get_template_ik($section['NAME'], $getfile);
 
 				$bs = new CIBlockSection;
 				$arSectionFields = Array(
@@ -121,7 +115,7 @@ if($_POST['ajax']) {
 			$res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>$post_per_page, "iNumPage"=> $page), $arSelect);
 			while($ob = $res->GetNextElement()) {
 			 	$arFields = $ob->GetFields();
-			 	$temaple = get_template($arFields['NAME'], $getfile);
+			 	$temaple = get_template_ik($arFields['NAME'], $getfile);
 			 	CIBlockElement::SetPropertyValuesEx($arFields['ID'], $arFilter['IBLOCK_ID'], array('ATT_GENERATED_TEXT' => $temaple));
 			 	// $el = new CIBlockElement;
 			 	// $res = $el->Update($arFields['ID'], array(
